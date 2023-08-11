@@ -1,0 +1,39 @@
+# Contributor:
+# Maintainer:
+pkgname=apparmord
+pkgver=0_git20230806
+pkgrel=0
+_commit="a2c35b07a5b4dbdc1fea5d7556fad632ab5f2eb2"
+pkgdesc="Full set of apparmor profiles"
+url="https://github.com/roddhjav/apparmor.d"
+arch="x86_64"
+license="GPL2"
+depends="apparmor"
+makedepends="
+          findutils
+          go
+          git
+          rsync
+          "
+subpackages=""
+source="$pkgname-$_commit.tar.gz::https://github.com/roddhjav/apparmor.d/archive/$_commit.tar.gz"
+builddir="$srcdir/apparmor.d-$_commit"
+
+build() {
+  export CGO_CPPFLAGS="${CPPFLAGS}"
+  export CGO_CFLAGS="${CFLAGS}"
+  export CGO_CXXFLAGS="${CXXFLAGS}"
+  export CGO_LDFLAGS="${LDFLAGS}"
+  export GOFLAGS="-buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw"
+  make DISTRIBUTION=arch
+}
+
+package() {
+  make install DESTDIR="$pkgdir"
+  # Remove systemd stuff
+  rm -rf "${pkgdir}/usr/lib"
+}
+
+sha512sums="
+7bbd160b034e9e97f277d42954397d408d2d785bed661632b14a4e635fa53d4e12e5152716be1687470cc280e30d27d0084c0e63b9af2b2fd48a6a8635b0108b  apparmord-a2c35b07a5b4dbdc1fea5d7556fad632ab5f2eb2.tar.gz
+"
