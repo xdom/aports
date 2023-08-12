@@ -10,28 +10,28 @@ arch="x86_64"
 license="GPL2"
 depends="apparmor"
 makedepends="
-          findutils
-          go
-          git
-          rsync
-          "
+	findutils
+	go
+	git
+	rsync
+	"
 subpackages=""
 source="$pkgname-$_commit.tar.gz::https://github.com/roddhjav/apparmor.d/archive/$_commit.tar.gz"
 builddir="$srcdir/apparmor.d-$_commit"
 
 build() {
-  export CGO_CPPFLAGS="${CPPFLAGS}"
-  export CGO_CFLAGS="${CFLAGS}"
-  export CGO_CXXFLAGS="${CXXFLAGS}"
-  export CGO_LDFLAGS="${LDFLAGS}"
-  export GOFLAGS="-buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw"
-  make DISTRIBUTION=arch
+	export CGO_CPPFLAGS="${CPPFLAGS}"
+	export CGO_CFLAGS="${CFLAGS}"
+	export CGO_CXXFLAGS="${CXXFLAGS}"
+	export CGO_LDFLAGS="${LDFLAGS}"
+	export GOFLAGS="-buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw"
+	make DISTRIBUTION=arch
 }
 
 package() {
-  make install DESTDIR="$pkgdir"
-  # Remove systemd stuff
-  rm -rf "${pkgdir}/usr/lib"
+	make install DESTDIR="$pkgdir"
+	# Remove systemd stuff
+	rm -rf "${pkgdir}/usr/lib"
 }
 
 sha512sums="

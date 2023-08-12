@@ -30,7 +30,7 @@ package() {
 	install -Dm755 "keymap/tutorial.kbd" "$pkgdir/usr/share/doc/$pkgname/keymap/tutorial.kbd"
 
 	for file in "keymap/template/"*.kbd; do
-	  install -Dm755 "$file" -t "$pkgdir/usr/share/doc/$pkgname/keymap/template"
+		install -Dm755 "$file" -t "$pkgdir/usr/share/doc/$pkgname/keymap/template"
 	done
 }
 
