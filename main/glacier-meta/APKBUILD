@@ -1,0 +1,58 @@
+# Contributor:
+# Maintainer:
+pkgname=glacier-meta
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="Glacier meta packages"
+url="https://github.com/xdom/glacier-meta"
+arch="noarch"
+license="unknown"
+depends=""
+makedepends=""
+checkdepends=""
+install=""
+subpackages="$pkgname-base $pkgname-desktop $pkgname-network"
+source=""
+builddir="$srcdir/"
+
+base() {
+	depends="
+		bottom bottom-doc bottom-zsh-completion
+		git git-doc git-zsh-completion
+		neofetch neofetch-doc
+		neovim neovim-doc
+		ranger ranger-doc
+		tmux tmux-doc tmux-zsh-completion
+	"
+	mkdir -p "$subpkgdir"
+}
+
+desktop() {
+	depends="
+		sway sway-doc sway-zsh-completion
+		alacritty alacritty-doc alacritty-zsh-completion
+		kanshi kanshi-doc
+		mako mako-doc mako-zsh-completion
+    nerd-fonts-all
+		pavucontrol pavucontrol-doc
+		waybar waybar-doc
+		wl-clipboard wl-clipboard-doc wl-clipboard-zsh-completion
+		qutebrowser qutebrowser-doc
+		xdg-desktop-portal-gtk xdg-desktop-portal-gtk-doc
+		xdg-desktop-portal-wlr xdg-desktop-portal-wlr-doc
+	"
+	mkdir -p "$subpkgdir"
+}
+
+network() {
+	depends="
+		openconnect openconnect-doc openconnect-openrc
+		vpn-slice
+	"
+	mkdir -p "$subpkgdir"
+}
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
