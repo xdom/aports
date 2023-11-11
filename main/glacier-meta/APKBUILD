@@ -19,6 +19,7 @@ base() {
 	depends="
 		bottom bottom-doc bottom-zsh-completion
 		git git-doc git-zsh-completion
+		man-pages
 		neofetch neofetch-doc
 		neovim neovim-doc
 		ranger ranger-doc
@@ -30,13 +31,22 @@ base() {
 desktop() {
 	depends="
 		sway sway-doc sway-zsh-completion
+		swaybg swaybg-doc
+		swayidle swayidle-doc swayidle-zsh-completion
+		swaylock swaylock-doc swaylock-zsh-completion
 		alacritty alacritty-doc alacritty-zsh-completion
+		grimshot grimshot-doc grim-doc slurp-doc
 		kanshi kanshi-doc
 		mako mako-doc mako-zsh-completion
     nerd-fonts-all
 		pavucontrol pavucontrol-doc
 		waybar waybar-doc
 		wl-clipboard wl-clipboard-doc wl-clipboard-zsh-completion
+		wofi wofi-doc wofi-calc wofi-emoji
+		cava
+		pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-doc
+		pulseaudio-openrc pulseaudio-zsh-completion
+		pulsemixer pavucontrol pavucontrol-doc
 		qutebrowser qutebrowser-doc
 		xdg-desktop-portal-gtk xdg-desktop-portal-gtk-doc
 		xdg-desktop-portal-wlr xdg-desktop-portal-wlr-doc
