@@ -44,11 +44,11 @@ desktop() {
 		wl-clipboard wl-clipboard-doc wl-clipboard-zsh-completion
 		wofi wofi-doc wofi-calc wofi-emoji
 		cava
-		pulseaudio pulseaudio-alsa pulseaudio-bluetooth pulseaudio-doc
+		pulseaudio pulseaudio-alsa pulseaudio-bluez pulseaudio-doc
 		pulseaudio-openrc pulseaudio-zsh-completion
 		pulsemixer pavucontrol pavucontrol-doc
 		qutebrowser qutebrowser-doc
-		xdg-desktop-portal-gtk xdg-desktop-portal-gtk-doc
+		xdg-desktop-portal-gtk
 		xdg-desktop-portal-wlr xdg-desktop-portal-wlr-doc
 	"
 	mkdir -p "$subpkgdir"
