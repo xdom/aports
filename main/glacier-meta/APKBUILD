@@ -11,7 +11,7 @@ depends=""
 makedepends=""
 checkdepends=""
 install=""
-subpackages="$pkgname-base $pkgname-desktop $pkgname-network"
+subpackages="$pkgname-base $pkgname-desktop $pkgname-network $pkgname-wifi"
 source=""
 builddir="$srcdir/"
 
@@ -58,6 +58,13 @@ network() {
 	depends="
 		openconnect openconnect-doc openconnect-openrc
 		vpn-slice
+	"
+	mkdir -p "$subpkgdir"
+}
+
+wifi() {
+	depends="
+		iwd
 	"
 	mkdir -p "$subpkgdir"
 }

@@ -12,7 +12,7 @@ depends="
 	"
 subpackages=""
 options=""
-source="https://github.com/Zeioth/wofi-calc/archive/ref/tags/$pkgver.zip"
+source="https://github.com/Zeioth/wofi-calc/archive/refs/tags/$pkgver.zip"
 
 package() {
 	mkdir -p "$pkgdir"/usr/bin
@@ -21,5 +21,5 @@ package() {
 
 
 sha512sums="
-ba2992810a3b983ba30ef511f8e7bea8a47dc9d69f76c8fdeb15d549b4644aa4e9bb244209a8eb562de8221630513cdfe71693ff3b024b53ddf658ea657f9feb wofi-calc-1.1.zip
+ba2992810a3b983ba30ef511f8e7bea8a47dc9d69f76c8fdeb15d549b4644aa4e9bb244209a8eb562de8221630513cdfe71693ff3b024b53ddf658ea657f9feb  1.1.zip
 "
