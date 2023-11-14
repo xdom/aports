@@ -1,0 +1,10 @@
+#!/bin/sh
+
+user=kmonad
+group=kmonad
+
+addgroup -S "$group" 2>/dev/null
+adduser -S -D -H -s /sbin/nologin -G "$group" -g "$group" "$user" 2>/dev/null
+usermod -aG input,uinput "$user" 2>/dev/null
+
+exit 0

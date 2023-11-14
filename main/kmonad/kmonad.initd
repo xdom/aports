@@ -1,0 +1,11 @@
+#!/sbin/openrc-run
+
+depend() {
+	need "udev"
+}
+
+command="/usr/bin/kmonad"
+command_args="${KMONAD_CONF_FILE}"
+command_user="kmonad:kmonad"
+command_background=true
+

@@ -10,9 +10,12 @@ makedepends="
 	cabal
 	git
 	"
-subpackages=""
+subpackages="$pkgname-openrc"
 options=""
-source="https://github.com/kmonad/kmonad/archive/$_commit.zip"
+source="https://github.com/kmonad/kmonad/archive/$_commit.zip
+				$pkgname.initd
+				$pkgname.confd
+				"
 builddir="$srcdir/$pkgname-$_commit"
 
 build() {
@@ -32,8 +35,14 @@ package() {
 	for file in "keymap/template/"*.kbd; do
 		install -Dm755 "$file" -t "$pkgdir/usr/share/doc/$pkgname/keymap/template"
 	done
+
+	install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -Dm644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
 }
 
+openrc() {
+	default_openrc
+}
 
 sha512sums="
 4a2dd215e742c421138e74e6155220e6f6d869ddb581672e1a55feb4a0d8e4dca82d58d795ff87a473d100e204bc0c1680538fc2f558995d4654ff47ecd529e8  3aa2f52536de853efbcb0f6e790c97a3734687ec.zip
