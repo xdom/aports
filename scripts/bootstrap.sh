@@ -14,16 +14,19 @@ id "$user" >/dev/null 2>&1 || {
 mkdir -p /var/cache/distfiles
 chgrp abuild /var/cache/distfiles
 chmod g+w /var/cache/distfiles
-sed -i -e "1i /home/$user/packages/main/" /etc/apk/repositories
+
+if ! ls /home/"$user"/.abuild/*.pub >/dev/null 2>&1; then
+  su "$user" -c "abuild-keygen -a -n"
+  cp /home/"$user"/.abuild/*.pub /etc/apk/keys/
+fi
 
 su - "$user" <<EOF
 mkdir packages
-test -f "/home/$user/.abuild/*.pub" || abuild-keygen -a -n
 git clone https://github.com/xdom/aports.git
 aports/scripts/build.sh
 EOF
 
-cp /home/"$user"/.abuild/*.pub /etc/apk/keys/
+sed -i -e "1i /home/$user/packages/main/" /etc/apk/repositories
 apk update
 echo "Done."
 
