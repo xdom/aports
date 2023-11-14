@@ -1,0 +1,29 @@
+#!/bin/sh
+user="abuilder"
+
+set -e
+
+echo "Install alpine-sdk"
+apk add alpine-sdk lua-aports
+
+id "$user" >/dev/null 2>&1 || {
+	echo "Create user $user"
+	adduser -S -D -s /bin/ash -G "abuild" -g "aports builder" "$user"
+}
+
+mkdir -p /var/cache/distfiles
+chgrp abuild /var/cache/distfiles
+chmod g+w /var/cache/distfiles
+sed -i -e "1i /home/$user/packages/main/" /etc/apk/repositories
+
+su - "$user" <<EOF
+mkdir packages
+test -f "/home/$user/.abuild/*.pub" || abuild-keygen -a -n
+git clone https://github.com/xdom/aports.git
+aports/scripts/build.sh
+EOF
+
+cp /home/"$user"/.abuild/*.pub /etc/apk/keys/
+apk update
+echo "Done."
+

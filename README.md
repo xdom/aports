@@ -1,6 +1,12 @@
 # aports
 Custom Alpine package repository
 
+## Quick start
+
+```
+curl -L https://raw.githubusercontent.com/xdom/aports/master/scripts/bootstrap.sh | sh
+```
+
 ## Usage
 
 Install package `lua-aports`.
