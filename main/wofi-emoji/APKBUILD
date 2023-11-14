@@ -6,7 +6,11 @@ _commit="796d688b71ac9fa1e5b2c1b9a3fa11dba801b02b"
 url="https://github.com/Zeioth/wofi-emoji"
 arch="all"
 license="MIT"
-makedepends=""
+makedepends="
+	curl
+	jq
+	sed
+	"
 depends="
 	wofi
 	wtype
