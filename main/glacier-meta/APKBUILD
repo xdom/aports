@@ -37,7 +37,9 @@ desktop() {
 		alacritty alacritty-doc alacritty-zsh-completion
 		grimshot grimshot-doc grim-doc slurp-doc
 		kanshi kanshi-doc
+		libinput libinput-doc libinput-udev
 		mako mako-doc mako-zsh-completion
+		mesa-dri-gallium mesa-va-gallium intel-media-driver linux-firmware-amdgpu
     nerd-fonts-all
 		pavucontrol pavucontrol-doc
 		waybar waybar-doc
@@ -47,9 +49,11 @@ desktop() {
 		pulseaudio pulseaudio-alsa pulseaudio-bluez pulseaudio-doc
 		pulseaudio-openrc pulseaudio-zsh-completion
 		pulsemixer pavucontrol pavucontrol-doc
+		seatd seatd-doc seatd-openrc
 		qutebrowser qutebrowser-doc
 		xdg-desktop-portal-gtk
 		xdg-desktop-portal-wlr xdg-desktop-portal-wlr-doc
+		xwayland
 	"
 	mkdir -p "$subpkgdir"
 }
