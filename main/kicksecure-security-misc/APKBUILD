@@ -1,0 +1,25 @@
+# Contributor:
+# Maintainer:
+pkgname=kicksecure-security-misc
+pkgver=35.1-1
+pkgrel=0
+pkgdesc="Enhances Miscellaneous Security Settings"
+url="https://github.com/Kicksecure/security-misc"
+arch="all"
+license="AGPL-3.0"
+depends="
+	doas
+	libcap2
+	glib
+	python3
+"
+makedepends=""
+checkdepends=""
+install=""
+subpackages=""
+source="$pkgname-$pkgver.tar.gz::https://github.com/Kicksecure/security-misc/archive/$pkgver.tar.gz"
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
