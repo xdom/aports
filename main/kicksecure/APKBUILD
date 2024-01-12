@@ -1,0 +1,79 @@
+# Contributor:
+# Maintainer:
+pkgname=kicksecure
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="Kicksecure meta packages"
+url="https://github.com/Kicksecure/kicksecure-meta-packages"
+arch="all"
+license="AGPL-3.0"
+depends=""
+makedepends=""
+checkdepends=""
+install=""
+subpackages="$pkgname-cli-host"
+source=""
+builddir="$srcdir/"
+
+cli-host() {
+	depends="
+		bottom bottom-doc bottom-zsh-completion
+		git git-doc git-zsh-completion
+		man-pages
+		neofetch neofetch-doc
+		neovim neovim-doc
+		ranger ranger-doc
+		tmux tmux-doc tmux-zsh-completion
+	"
+	mkdir -p "$subpkgdir"
+}
+
+desktop() {
+	depends="
+		sway sway-doc sway-zsh-completion
+		swaybg swaybg-doc
+		swayidle swayidle-doc swayidle-zsh-completion
+		swaylock swaylock-doc swaylock-zsh-completion
+		alacritty alacritty-doc alacritty-zsh-completion
+		grimshot grimshot-doc grim-doc slurp-doc
+		kanshi kanshi-doc
+		libinput libinput-doc libinput-udev
+		mako mako-doc mako-zsh-completion
+		mesa-dri-gallium mesa-va-gallium intel-media-driver linux-firmware-amdgpu
+    nerd-fonts-all
+		pavucontrol pavucontrol-doc
+		waybar waybar-doc
+		wl-clipboard wl-clipboard-doc wl-clipboard-zsh-completion
+		wofi wofi-doc wofi-calc wofi-emoji
+		cava
+		pulseaudio pulseaudio-alsa pulseaudio-bluez pulseaudio-doc
+		pulseaudio-openrc pulseaudio-zsh-completion
+		pulsemixer pavucontrol pavucontrol-doc
+		seatd seatd-doc seatd-openrc
+		qutebrowser qutebrowser-doc
+		xdg-desktop-portal-gtk
+		xdg-desktop-portal-wlr xdg-desktop-portal-wlr-doc
+		xwayland
+	"
+	mkdir -p "$subpkgdir"
+}
+
+network() {
+	depends="
+		openconnect openconnect-doc openconnect-openrc
+		vpn-slice
+	"
+	mkdir -p "$subpkgdir"
+}
+
+wifi() {
+	depends="
+		iwd
+	"
+	mkdir -p "$subpkgdir"
+}
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
