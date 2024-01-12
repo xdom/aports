@@ -1,0 +1,246 @@
+#!/bin/bash
+
+## Copyright (C) 2012 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
+## See the file COPYING for copying conditions.
+
+if [ -f /usr/libexec/helper-scripts/pre.bsh ]; then
+   source /usr/libexec/helper-scripts/pre.bsh
+fi
+
+set -e
+
+true "
+#####################################################################
+## INFO: BEGIN: $DPKG_MAINTSCRIPT_PACKAGE $DPKG_MAINTSCRIPT_NAME $@
+#####################################################################
+"
+
+user_groups_modifications() {
+   ## /usr/libexec/security-misc/hide-hardware-info
+   addgroup --system sysfs
+   addgroup --system cpuinfo
+
+   ## group 'sudo' membership required to use 'su'
+   ## /usr/share/pam-configs/wheel-security-misc
+   adduser root sudo
+
+   ## Useful to create groups in preinst rather than postinst.
+   ## Otherwise if a user saw an error message such as this:
+   ##
+   ## /var/lib/ dpkg/tmp.ci/preinst: ERROR: No user is a member of group 'console'. Installation aborted.
+   ## /var/lib/ dpkg/tmp.ci/preinst: ERROR: You probably want to run:
+   ## sudo adduser user console
+   ##
+   ## Then the user could not run 'sudo adduser user console' but also would
+   ## have to create the groups himself.
+
+   ## Related to Console Lockdown.
+   ## /usr/share/pam-configs/console-lockdown-security-misc
+   ## /etc/security/access-security-misc.conf
+   addgroup --system console
+   addgroup --system console-unrestricted
+   ## This has no effect since by default this package also ships and an
+   ## /etc/securetty configuration file that contains nothing but comments, i.e.
+   ## an "empty" /etc/securetty.
+   ## In case a system administrator edits /etc/securetty, there is no need to
+   ## block for this to be still blocked by console lockdown. See also:
+   ## https://www.whonix.org/wiki/Root#Root_Login
+   adduser root console
+}
+
+output_skip_checks() {
+   echo "security-misc '$0' INFO: Allow installation of security-misc anyway." >&2
+   echo "security-misc '$0' INFO: (technical reason: $@)" >&2
+   echo "security-misc '$0' INFO: If this is a chroot this is probably OK." >&2
+   echo "security-misc '$0' INFO: Otherwise you might not be able to login." >&2
+}
+
+sudo_users_check () {
+   if command -v "qubesdb-read" &>/dev/null; then
+      ## Qubes users can use dom0 to get a root terminal emulator.
+      ## For example:
+      ## qvm-run -u root debian-10 xterm
+      return 0
+   fi
+
+   local sudo_users user_with_sudo are_there_any_sudo_users OLD_IFS
+
+   sudo_users="$(getent group sudo | cut -d: -f4)"
+   ## example sudo_users:
+   ## user,root
+
+   OLD_IFS="$IFS"
+   IFS=","
+   export IFS
+
+   for user_with_sudo in $sudo_users ; do
+      if [ "$user_with_sudo" = "root" ]; then
+         ## root login is also restricted.
+         ## Therefore user "root" being member of group "sudo" is
+         ## considered insufficient.
+         continue
+      fi
+      are_there_any_sudo_users=yes
+      break
+   done
+
+   IFS="$OLD_IFS"
+   export IFS
+
+   if [ "$are_there_any_sudo_users" = "yes" ]; then
+      return 0
+   fi
+
+   ## Prevent users from locking themselves out.
+   ## https://forums.whonix.org/t/is-security-misc-suitable-for-hardening-bridges-and-relays/8299/4
+   echo "$0: ERROR: No user is a member of group 'sudo'. Installation aborted." >&2
+   echo "$0: ERROR: You probably want to run:" >&2
+   echo "$0: NOTE: Replace user 'user' with your actual Linux user account name." >&2
+   echo "" >&2
+   echo "sudo adduser user sudo" >&2
+   echo "sudo adduser user console" >&2
+   echo "" >&2
+   echo "$0: ERROR: See also installation instructions:" >&2
+   echo "https://www.kicksecure.com/wiki/security-misc#install" >&2
+
+   if [ "$SECURITY_MISC_INSTALL" = "force" ]; then
+      output_skip_checks "Environment variable SECURITY_MISC_INSTALL is set to 'force'."
+      return 0
+   fi
+   if test -f "/var/lib/security-misc/skip_install_check" ; then
+      output_skip_checks "File '/var/lib/security-misc/skip_install_check' exists."
+      return 0
+   fi
+
+   exit 200
+}
+
+console_users_check() {
+   if [ "$SECURITY_MISC_INSTALL" = "force" ]; then
+      return 0
+   fi
+   if test -f "/var/lib/security-misc/skip_install_check" ; then
+      return 0
+   fi
+   if command -v "qubesdb-read" &>/dev/null; then
+      ## Qubes users can use dom0 to get a root terminal emulator.
+      ## For example:
+      ## qvm-run -u root debian-10 xterm
+      return 0
+   fi
+
+   local console_users console_unrestricted_users user_with_console are_there_any_console_users OLD_IFS
+
+   console_users="$(getent group console | cut -d: -f4)"
+   ## example console_users:
+   ## user
+   console_unrestricted_users="$(getent group console-unrestricted | cut -d: -f4)"
+
+   OLD_IFS="$IFS"
+   IFS=","
+   export IFS
+
+   for user_with_console in $console_users $console_unrestricted_users ; do
+      if [ "$user_with_console" = "root" ]; then
+         ## root login is also restricted.
+         ## Therefore user "root" being member of group "console" is
+         ## considered insufficient.
+         continue
+      fi
+      are_there_any_console_users=yes
+      break
+   done
+
+   IFS="$OLD_IFS"
+   export IFS
+
+   ## Prevent users from locking themselves out.
+   ## https://forums.whonix.org/t/is-security-misc-suitable-for-hardening-bridges-and-relays/8299/4
+   if [ "$are_there_any_console_users" = "yes" ]; then
+      return 0
+   fi
+
+   echo "$0: ERROR: No user is a member of group 'console'. Installation aborted." >&2
+   echo "$0: ERROR: You probably want to run:" >&2
+   echo "" >&2
+   echo "sudo adduser user console" >&2
+   echo "" >&2
+   echo "$0: ERROR: See also installation instructions:" >&2
+   echo "https://www.whonix.org/wiki/security-misc#install" >&2
+
+   if [ "$SECURITY_MISC_INSTALL" = "force" ]; then
+      output_skip_checks "Environment variable SECURITY_MISC_INSTALL is set to 'force'."
+      return 0
+   fi
+   if test -f "/var/lib/security-misc/skip_install_check" ; then
+      output_skip_checks "File '/var/lib/security-misc/skip_install_check' exists."
+      return 0
+   fi
+
+   exit 201
+}
+
+legacy() {
+   if [ -f "/var/lib/legacy/do_once/${FUNCNAME}_version_1" ]; then
+      return 0
+   fi
+
+   local continue_yes user_to_be_created
+
+   if [ -f "/usr/share/whonix/marker" ]; then
+      continue_yes=true
+   fi
+   if [ -f "/usr/share/kicksecure/marker" ]; then
+      continue_yes=true
+   fi
+
+   if [ ! "$continue_yes" = "true" ]; then
+      return 0
+   fi
+
+   if command -v "qubesdb-read" &>/dev/null; then
+      ## Qubes users can use dom0 to get a root terminal emulator.
+      ## For example:
+      ## qvm-run -u root debian-10 xterm
+      return 0
+   fi
+
+   ## https://forums.whonix.org/t/etc-security-hardening-console-lockdown-pam-access-access-conf/8592/7
+
+   user_to_be_created=user
+
+   if ! id "$user_to_be_created" &>/dev/null ; then
+      true "INFO: user '$user_to_be_created' does not exist. Skipping adduser console and pam-auth-update."
+      return 0
+   fi
+
+   adduser "$user_to_be_created" console
+
+   pam-auth-update --enable console-lockdown-security-misc
+
+   mkdir --parents "/var/lib/legacy/do_once"
+   touch "/var/lib/legacy/do_once/${FUNCNAME}_version_1"
+}
+
+user_groups_modifications
+legacy
+
+if [ "$1" = "install" ] || [ "$1" = "upgrade" ]; then
+   sudo_users_check
+   console_users_check
+fi
+
+true "INFO: debhelper beginning here."
+
+#DEBHELPER#
+
+true "INFO: Done with debhelper."
+
+true "
+#####################################################################
+## INFO: END  : $DPKG_MAINTSCRIPT_PACKAGE $DPKG_MAINTSCRIPT_NAME $@
+#####################################################################
+"
+
+## Explicitly "exit 0", so eventually trapped errors can be ignored.
+exit 0
