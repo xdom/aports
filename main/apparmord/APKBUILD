@@ -2,9 +2,9 @@
 # Maintainer:
 pkgname=apparmord
 pkgver=0_git20240428
-pkgrel=0
+pkgrel=1
 _commit="454daa9602a3f8102fa1fbc3e91b77713e291a4f"
-pkgdesc="Full set of apparmor profiles"
+pkgdesc="Full set of apparmor profiles (complain mode)"
 url="https://github.com/roddhjav/apparmor.d"
 arch="x86_64"
 license="GPL2"
@@ -15,7 +15,7 @@ makedepends="
 	git
 	rsync
 	"
-subpackages=""
+subpackages="$pkgname-fsp $pkgname-enforce $pkgname-enforce-fsp:enforce_fsp"
 source="$pkgname-$_commit.tar.gz::https://github.com/roddhjav/apparmor.d/archive/$_commit.tar.gz"
 builddir="$srcdir/apparmor.d-$_commit"
 
@@ -25,13 +25,62 @@ build() {
 	export CGO_CXXFLAGS="${CXXFLAGS}"
 	export CGO_LDFLAGS="${LDFLAGS}"
 	export GOFLAGS="-buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw"
-	make DISTRIBUTION=arch
+	make build
+	mkdir .package
+	cp -r .build .package/build
+
+	DISTRIBUTION=arch .package/build/prebuild --complain
+	mv .build .package/complain
+	cp -r .package/build/* .package/complain/
+
+	DISTRIBUTION=arch .package/build/prebuild --enforce
+	mv .build .package/enforce
+	cp -r .package/build/* .package/enforce/
+
+	DISTRIBUTION=arch .package/build/prebuild --complain --full
+	mv .build .package/complain-fsp
+	cp -r .package/build/* .package/complain-fsp/
+
+	DISTRIBUTION=arch .package/build/prebuild --enforce --full
+	mv .build .package/enforce-fsp
+	cp -r .package/build/* .package/enforce-fsp/
 }
 
 package() {
-	make install DESTDIR="$pkgdir"
+	make install BUILD=.package/complain DESTDIR="$pkgdir"
 	# Remove systemd stuff
 	rm -rf "${pkgdir}/usr/lib"
+}
+
+enforce() {
+	pkgdesc="Full set of apparmor profiles (enforce mode)"
+	provides="${pkgname}"
+
+	cd "${builddir}"
+	make install BUILD=.package/enforce DESTDIR="$subpkgdir"
+	# Remove systemd stuff
+	rm -rf "${subpkgdir}/usr/lib"
+}
+
+fsp() {
+	pkgdesc="Full set of apparmor profiles with full system policy enabled (complain mode)"
+	provides="${pkgname}"
+
+	cd "${builddir}"
+	make install BUILD=.package/complain-fsp DESTDIR="$subpkgdir"
+	# Remove systemd stuff
+	rm -rf "${subpkgdir}/usr/lib"
+}
+
+enforce_fsp() {
+	pkgdesc="Full set of apparmor profiles with full system policy enabled (enforce mode)"
+	provides="${pkgname}"
+
+	cd "${builddir}"
+	ls -la
+	make install BUILD=.package/enforce-fsp DESTDIR="$subpkgdir"
+	# Remove systemd stuff
+	rm -rf "${subpkgdir}/usr/lib"
 }
 
 sha512sums="
