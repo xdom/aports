@@ -1,6 +1,6 @@
 pkgname=kmonad
 pkgver=0.4.1_git20230426
-pkgrel=0
+pkgrel=1
 pkgdesc="An advanced keyboard manager"
 _commit="3aa2f52536de853efbcb0f6e790c97a3734687ec"
 url="https://github.com/kmonad/kmonad"

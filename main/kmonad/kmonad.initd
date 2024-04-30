@@ -8,4 +8,5 @@ command="/usr/bin/kmonad"
 command_args="${KMONAD_CONF_FILE}"
 command_user="kmonad:kmonad"
 command_background=true
+pidfile="/run/${RC_SVCNAME}.pid"
 
