@@ -1,9 +1,9 @@
 # Contributor:
 # Maintainer:
 pkgname=apparmord
-pkgver=0_git20240428
+pkgver=0_git20250109
 pkgrel=1
-_commit="454daa9602a3f8102fa1fbc3e91b77713e291a4f"
+_commit="2560e9645ff11d4fd24c69ef8145adf9bc8f817c"
 pkgdesc="Full set of apparmor profiles (complain mode)"
 url="https://github.com/roddhjav/apparmor.d"
 arch="x86_64"
@@ -84,5 +84,5 @@ enforce_fsp() {
 }
 
 sha512sums="
-d31db087bb6ba3fc0d6b501e4d54c72c27cb784c43833bd84f096e94b544ee1ef74add08c787ac8765abdd695765c86fde83f5707bff17c7f95b910f3fd96c57  apparmord-454daa9602a3f8102fa1fbc3e91b77713e291a4f.tar.gz
+2b09d2ad989e61eefe586ed8fd703f8df0516a6a4d6260080b6e9c5994b180430f753e2fe34a064ce3d05c0c72763cb4a3fccb983b104d39a3f5a3be47fa37c8  apparmord-2560e9645ff11d4fd24c69ef8145adf9bc8f817c.tar.gz
 "
