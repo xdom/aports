@@ -1,9 +1,9 @@
 # Contributor:
 # Maintainer:
 pkgname=apparmord
-pkgver=0_git20250109
+pkgver=0_git20250115
 pkgrel=1
-_commit="2560e9645ff11d4fd24c69ef8145adf9bc8f817c"
+_commit="d20435eb210708b50748732cdb46cbd914abcb24"
 pkgdesc="Full set of apparmor profiles (complain mode)"
 url="https://github.com/roddhjav/apparmor.d"
 arch="x86_64"
