@@ -2,7 +2,7 @@
 # Maintainer:
 pkgname=apparmord
 pkgver=0_git20250115
-pkgrel=1
+pkgrel=2
 _commit="d20435eb210708b50748732cdb46cbd914abcb24"
 pkgdesc="Full set of apparmor profiles (complain mode)"
 url="https://github.com/roddhjav/apparmor.d"
@@ -15,11 +15,14 @@ makedepends="
 	git
 	rsync
 	"
+options="net"
 subpackages="$pkgname-doc $pkgname-fsp $pkgname-enforce $pkgname-enforce-fsp:enforce_fsp"
 source="$pkgname-$_commit.tar.gz::https://github.com/roddhjav/apparmor.d/archive/$_commit.tar.gz
 				0001-feat-prebuild-allow-environment-in-inherited-transit.patch
 				"
 builddir="$srcdir/apparmor.d-$_commit"
+abi=3
+dist="arch"
 
 build() {
 	export CGO_CPPFLAGS="${CPPFLAGS}"
@@ -31,19 +34,19 @@ build() {
 	mkdir .package
 	cp -r .build .package/build
 
-	DISTRIBUTION=arch .package/build/prebuild --complain
+	DISTRIBUTION="$dist" .package/build/prebuild --complain --abi $abi
 	mv .build .package/complain
 	cp -r .package/build/* .package/complain/
 
-	DISTRIBUTION=arch .package/build/prebuild --enforce
+	DISTRIBUTION="$dist" .package/build/prebuild --enforce --abi $abi
 	mv .build .package/enforce
 	cp -r .package/build/* .package/enforce/
 
-	DISTRIBUTION=arch .package/build/prebuild --complain --full
+	DISTRIBUTION="$dist" .package/build/prebuild --complain --full --abi $abi
 	mv .build .package/complain-fsp
 	cp -r .package/build/* .package/complain-fsp/
 
-	DISTRIBUTION=arch .package/build/prebuild --enforce --full
+	DISTRIBUTION="$dist" .package/build/prebuild --enforce --full --abi $abi
 	mv .build .package/enforce-fsp
 	cp -r .package/build/* .package/enforce-fsp/
 }
