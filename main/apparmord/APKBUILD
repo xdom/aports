@@ -16,7 +16,9 @@ makedepends="
 	rsync
 	"
 subpackages="$pkgname-fsp $pkgname-enforce $pkgname-enforce-fsp:enforce_fsp"
-source="$pkgname-$_commit.tar.gz::https://github.com/roddhjav/apparmor.d/archive/$_commit.tar.gz"
+source="$pkgname-$_commit.tar.gz::https://github.com/roddhjav/apparmor.d/archive/$_commit.tar.gz
+				0001-feat-prebuild-allow-environment-in-inherited-transit.patch
+				"
 builddir="$srcdir/apparmor.d-$_commit"
 
 build() {
@@ -84,5 +86,6 @@ enforce_fsp() {
 }
 
 sha512sums="
-2b09d2ad989e61eefe586ed8fd703f8df0516a6a4d6260080b6e9c5994b180430f753e2fe34a064ce3d05c0c72763cb4a3fccb983b104d39a3f5a3be47fa37c8  apparmord-2560e9645ff11d4fd24c69ef8145adf9bc8f817c.tar.gz
+7845dcb37da3ff8a6ac0cd632fc9b283e7b04afd7a23bbed92f6fc41c2025284fc0225b0107b33f384e455193b48b6e40487b59e97379bc6e05174fb22ff767d  apparmord-d20435eb210708b50748732cdb46cbd914abcb24.tar.gz
+8aa88703f205ff659fd3c76a87868e7f3057803a284ef7a5c50df75e0b07b1c3733413856c16d1524a8be2d53d06d129584c7cb47e487f1a10981718a30e9fce  0001-feat-prebuild-allow-environment-in-inherited-transit.patch
 "

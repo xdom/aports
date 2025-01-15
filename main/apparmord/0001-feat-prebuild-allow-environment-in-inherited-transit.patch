@@ -1,0 +1,25 @@
+From bef7fb96abb281d556c29157274f4a263f7ccdcd Mon Sep 17 00:00:00 2001
+From: Dominik Matta <dominik@matta.sk>
+Date: Wed, 15 Jan 2025 14:31:54 +0100
+Subject: [PATCH] feat(prebuild): allow environment in inherited transition
+
+Convert also Pix to pix which causes some issues, too.
+---
+ pkg/prebuild/builder/hotfix.go | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/pkg/prebuild/builder/hotfix.go b/pkg/prebuild/builder/hotfix.go
+index f7e6143b..00581067 100644
+--- a/pkg/prebuild/builder/hotfix.go
++++ b/pkg/prebuild/builder/hotfix.go
+@@ -12,6 +12,7 @@ import (
+ var (
+ 	regHotfix = util.ToRegexRepl([]string{
+ 		`Cx`, `cx`,
++		`Pix`, `pix`,
+ 		`PUx`, `pux`,
+ 		`Px`, `px`,
+ 		`Ux`, `ux`,
+-- 
+2.47.1
+
