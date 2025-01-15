@@ -15,7 +15,7 @@ makedepends="
 	git
 	rsync
 	"
-subpackages="$pkgname-fsp $pkgname-enforce $pkgname-enforce-fsp:enforce_fsp"
+subpackages="$pkgname-doc $pkgname-fsp $pkgname-enforce $pkgname-enforce-fsp:enforce_fsp"
 source="$pkgname-$_commit.tar.gz::https://github.com/roddhjav/apparmor.d/archive/$_commit.tar.gz
 				0001-feat-prebuild-allow-environment-in-inherited-transit.patch
 				"
@@ -62,6 +62,8 @@ enforce() {
 	make install BUILD=.package/enforce DESTDIR="$subpkgdir"
 	# Remove systemd stuff
 	rm -rf "${subpkgdir}/usr/lib"
+	# Remove man pages (already included in apparmord-doc)
+	rm -rf "${subpkgdir}/usr/share/man"
 }
 
 fsp() {
@@ -72,6 +74,8 @@ fsp() {
 	make install BUILD=.package/complain-fsp DESTDIR="$subpkgdir"
 	# Remove systemd stuff
 	rm -rf "${subpkgdir}/usr/lib"
+	# Remove man pages (already included in apparmord-doc)
+	rm -rf "${subpkgdir}/usr/share/man"
 }
 
 enforce_fsp() {
@@ -83,6 +87,8 @@ enforce_fsp() {
 	make install BUILD=.package/enforce-fsp DESTDIR="$subpkgdir"
 	# Remove systemd stuff
 	rm -rf "${subpkgdir}/usr/lib"
+	# Remove man pages (already included in apparmord-doc)
+	rm -rf "${subpkgdir}/usr/share/man"
 }
 
 sha512sums="
