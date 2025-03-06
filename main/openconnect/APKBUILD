@@ -1,7 +1,8 @@
 # Contributor: Myautsai PAN <myautsai@gmail.com>
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=openconnect
-pkgver=9.12
+# Since apk-tools >=3.0.0 can be 9.12_git~94e0b16c
+pkgver=9.12.1_alpha
 pkgrel=1
 pkgdesc="Open client for Cisco AnyConnect VPN"
 url="https://www.infradead.org/openconnect/"
@@ -9,17 +10,20 @@ arch="all"
 license="LGPL-2.1-or-later"
 depends="vpnc iproute2"
 makedepends="autoconf automake intltool openssl-dev libxml2-dev
-	krb5-dev lz4-dev libproxy-dev linux-headers stoken-dev
+	krb5-dev lz4-dev libproxy-dev libtool linux-headers stoken-dev
 	pcsc-lite-dev oath-toolkit-dev python3-dev"
 subpackages="$pkgname-doc $pkgname-dev $pkgname-openrc $pkgname-bash-completion"
-source="https://www.infradead.org/openconnect/download/openconnect-$pkgver.tar.gz
+source="https://gitlab.com/openconnect/openconnect/-/archive/v9.12/openconnect-v9.12.tar.gz
 	$pkgname.initd
 	$pkgname.confd
 	$pkgname.logrotate
+	0001-Use-RFC9266-tls-exporter-channel-bindings-for-Cisco.patch
 	"
 options="!check" # fail with new openssl
+builddir="$srcdir/openconnect-v9.12"
 
 build() {
+	./autogen.sh
 	./configure \
 		--prefix=/usr \
 		--sbindir=/usr/bin \
@@ -49,8 +53,9 @@ package() {
 }
 
 sha512sums="
-5c622e8bdfac3d21b5881660444e5d2b84e9463a99493d42cbfb480c3aa3972076bdeeb618aca02abed68e31dbeadcb66fb1c370e62a20f20cd544753c7ac48e  openconnect-9.12.tar.gz
+71b4e6551681f95ee4605db66b0d87caa04737757e4d013f5ea2d56940ec2829e674a12a280db22f079b2f2ad91289294f11d5b72d1986c936cb6077062e234a  openconnect-v9.12.tar.gz
 994a8100ef0618e22c5aa6c6ac517632ad16fd58f41abda8379f5cdca8a1ffd6eff5a4cc2d6464db60bf6cc3df1237696cbe055cf83b4c0ccfe77042baa7b1e2  openconnect.initd
 a689df7141621c80bca77fdd1e01397b98882c7fd8db79b2fe1495916656522234e3af739538002533c003e4243e9af4bf80cd73bae961e15568997ce89ef6d5  openconnect.confd
 3b269eb7f469343d48e6e3aa694c5c051811c217217bebf2e74d051cbacf2b57ba926ea69474d30937067f45100863188f719db3fa1bcb4862ddbf446bdd48d2  openconnect.logrotate
+679230659038b4ec4f1a8c940277888ad6ec3bad7dccbe33b3ee544f2ee4c0ab7c7482f67f7ecb86dc0d504657617a65e392f1fc9a0e531e27e0aaa86dff32ce  0001-Use-RFC9266-tls-exporter-channel-bindings-for-Cisco.patch
 "
