@@ -1,0 +1,66 @@
+# Contributor: aaaaa <please@ignore.pl>
+# Maintainer: aaaaa <please@ignore.pl>
+
+pkgname=beansprout
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="A DWM-style tiling Wayland compositor with built-in wallpaper and clock/bar configured in KDL"
+url="https://codeberg.org/beansprout/beansprout"
+arch="x86_64"
+license="GPL-3.0-only CC-BY-4.0 CC0-1.0"
+
+depends="
+	so:libfcft.so.4
+	so:libpixman-1.so.0
+	so:libxkbcommon.so.0
+	wayland-libs-client
+"
+
+makedepends="
+	libxkbcommon-dev
+	fcft-dev
+	pixman-dev
+	scdoc
+	wayland-dev
+	wayland-protocols
+	zig>=0.16.0
+"
+
+subpackages="$pkgname-doc"
+
+source="
+	$pkgname-$pkgver.tar.gz::https://codeberg.org/beansprout/beansprout/archive/v$pkgver.tar.gz
+	$pkgname.desktop
+"
+
+build() {
+	cd "$srcdir/$pkgname"
+	zig build -Doptimize=ReleaseSafe
+}
+
+check() {
+	cd "$srcdir/$pkgname"
+	zig build -Doptimize=ReleaseSafe test
+}
+
+package() {
+	cd "$srcdir/$pkgname"
+	DESTDIR="$pkgdir" zig build -Doptimize=ReleaseSafe --prefix usr/ install
+	install -Dm644 LICENSES/GPL-3.0-only.txt \
+		"$pkgdir/usr/share/licenses/$pkgname/GPL-3.0-only.txt"
+	install -Dm644 LICENSES/CC-BY-4.0.txt \
+		"$pkgdir/usr/share/licenses/$pkgname/CC-BY-4.0.txt"
+	install -Dm644 LICENSES/CC0-1.0.txt \
+		"$pkgdir/usr/share/licenses/$pkgname/CC0-1.0.txt"
+	install -Dm644 examples/config.kdl \
+		"$pkgdir/usr/share/doc/$pkgname/examples/config.kdl"
+
+	cd "$srcdir"
+	install -D -m644 beansprout.desktop \
+		"$pkgdir/usr/share/wayland-sessions/beansprout.desktop"
+}
+
+sha512sums="
+04fb90037bf4cf26837277c5f15491c09553ac75d03462e68ee70644957897f3f5f817248b87df6a1b85b6d1dd09a4422d26cc0a215ecc49c5fe46f46b814325  beansprout-1.0.0.tar.gz
+6352b7cfca563bd40ef3820518895ba57438e93e5a8e2fa0c8fc6e7f5293310e81a26d3f9906181f2fd3e13f92c951515771b2f82a158e64811d431c4cc5c7c2  beansprout.desktop
+"
