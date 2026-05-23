@@ -1,0 +1,62 @@
+# Contributor: Keon Cachia <keonfarrugia@gmail.com>
+# Maintainer: Keon Cachia <keonfarrugia@gmail.com>
+
+pkgname=rill
+pkgver=0.6.0
+pkgrel=0
+pkgdesc="A minimalist scrolling window manager for River"
+url="https://codeberg.org/lzj15/rill"
+arch="x86_64"
+license="MIT"
+
+_zigwlver=0.6.0
+_xkbver=0.4.0
+
+depends="
+	so:libxkbcommon.so.0
+	wayland-libs-client
+"
+
+makedepends="
+	libxkbcommon-dev
+	wayland-dev
+	wayland-protocols
+	zig>=0.16.0
+"
+
+options="!check" # config.zig test segfaults
+subpackages="$pkgname-doc"
+
+source="
+	$pkgname-$pkgver.tar.gz::https://codeberg.org/lzj15/rill/archive/$pkgver.tar.gz
+	zig-wayland-$_zigwlver.tar.gz::https://codeberg.org/ifreund/zig-wayland/archive/v$_zigwlver.tar.gz
+	zig-xkbcommon-$_xkbver.tar.gz::https://codeberg.org/ifreund/zig-xkbcommon/archive/v$_xkbver.tar.gz
+"
+
+build() {
+	cd "$srcdir/$pkgname"
+	zig build \
+		-Doptimize=ReleaseSafe \
+		--fork="$srcdir/zig-wayland" \
+		--fork="$srcdir/zig-xkbcommon"
+}
+
+package() {
+	cd "$srcdir/$pkgname"
+	DESTDIR="$pkgdir" zig build \
+		-Doptimize=ReleaseSafe \
+		--fork="$srcdir/zig-wayland" \
+		--fork="$srcdir/zig-xkbcommon" \
+		--prefix usr/ \
+		install
+	install -Dm644 LICENSE \
+		"$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm644 config.zon \
+		"$pkgdir/usr/share/doc/$pkgname/config.zon"
+}
+
+sha512sums="
+9c46baa7dffde0b8b8f5a4826785eca76e8f1d57671151dbf97532be4a321f3e4c44156be883eba4e0e70c3b617a66b8c37b619f8af540d0dbb573a21a70fa6a  rill-0.6.0.tar.gz
+b2328222e60676b50a5a3445e3e6e74655139c5e6e4f263108846fe0ec79a48b99590f823353e9721d9ce2c6d783681fd75cf6b672de19217db50582df444372  zig-wayland-0.6.0.tar.gz
+f107d6f8a0a77f9ed6d7bd518519a1052cfc90350bc1f1817b3e24725143b307b4c86be3f25c7cb0feb54273e5e5d9f12fd63db6f1b3f235c08e6c330acbdfe0  zig-xkbcommon-0.4.0.tar.gz
+"
