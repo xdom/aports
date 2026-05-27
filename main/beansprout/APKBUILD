@@ -26,6 +26,7 @@ makedepends="
 	zig>=0.16.0
 "
 
+options="net"
 subpackages="$pkgname-doc"
 
 source="
