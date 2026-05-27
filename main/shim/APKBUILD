@@ -1,0 +1,45 @@
+# Maintainer: nl6720 <nl6720@archlinux.org>
+pkgname=shim
+pkgver=16.1-8
+pkgrel=0
+pkgdesc="Initial UEFI bootloader for Secure Boot environments (prebuilt signed x64 binaries from Fedora)"
+url="https://src.fedoraproject.org/rpms/shim"
+arch="x86_64"
+license="BSD-2-Clause"
+
+options="!strip"
+makedepends="rpm2cpio"
+
+_shim_ver=${pkgver%-*}/${pkgver##*-}
+source="
+	https://kojipkgs.fedoraproject.org/packages/shim/${_shim_ver}/x86_64/shim-x64-${pkgver}.x86_64.rpm
+"
+
+unpack() {
+	mkdir -p "$srcdir"
+	cd "$srcdir"
+	rpm2cpio "$SRCDEST/shim-x64-${pkgver}.x86_64.rpm" | cpio -idmv
+}
+
+build() {
+	:
+}
+
+package() {
+	cd "$srcdir/usr/lib/efi/shim/${pkgver}"
+
+	install -Dm644 \
+		EFI/fedora/shimx64.efi \
+		"$pkgdir/usr/share/$pkgname/shimx64.efi"
+
+	install -Dm644 \
+		EFI/fedora/mmx64.efi \
+		"$pkgdir/usr/share/$pkgname/mmx64.efi"
+
+	install -Dm644 \
+		EFI/BOOT/fbx64.efi \
+		"$pkgdir/usr/share/$pkgname/fbx64.efi"
+}
+sha512sums="
+26215953f7b01da06d0452b4287277ad5fc295a1aa4b79c1ff9d9a454fb029ae2a2090a64609d8ea42613bd5ae3e02ccebd1bea6e6912bbd5e0cd6de320723f2  shim-x64-16.1-8.x86_64.rpm
+"
