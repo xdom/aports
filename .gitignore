@@ -16,4 +16,3 @@ build.log
 core
 !core/
 .vscode/
-.rootbld-repositories
