@@ -1,0 +1,79 @@
+# Contributor: Keon Cachia <keonfarrugia@gmail.com>
+# Maintainer: Keon Cachia <keonfarrugia@gmail.com>
+
+pkgname=kwim
+pkgver=0.2.0
+pkgrel=0
+pkgdesc="Kewuaa's input manager for River"
+url="https://github.com/kewuaa/kwim"
+arch="x86_64"
+license="GPL-3.0-only"
+
+depends="
+	so:libxkbcommon.so.0
+	wayland-libs-client
+"
+
+makedepends="
+	libxkbcommon-dev
+	wayland-dev
+	wayland-protocols
+	zig>=0.16.0
+"
+
+subpackages="$pkgname-doc"
+
+_mvzrver=0.3.9
+_zigwlver=0.6.0
+_xkbver=0.4.0
+_clapver=0.12.0
+
+source="
+	$pkgname-$pkgver.tar.gz::https://github.com/kewuaa/kwim/archive/refs/tags/v$pkgver.tar.gz
+	mvzr-$_mvzrver.tar.gz::https://github.com/mnemnion/mvzr/archive/refs/tags/v$_mvzrver.tar.gz
+	zigwl-$_zigwlver.tar.gz::https://github.com/ifreund/zig-wayland/archive/refs/tags/v$_zigwlver.tar.gz
+	xkb-$_xkbver.tar.gz::https://github.com/ifreund/zig-xkbcommon/archive/refs/tags/v$_xkbver.tar.gz
+	clap-$_clapver.tar.gz::https://github.com/Hejsil/zig-clap/archive/refs/tags/$_clapver.tar.gz
+"
+
+build() {
+	cd "$srcdir/$pkgname-$pkgver"
+	zig build \
+		--prefix usr \
+		--fork="$srcdir/zig-xkbcommon-$_xkbver" \
+		--fork="$srcdir/mvzr-$_mvzrver" \
+		--fork="$srcdir/zig-clap-$_clapver" \
+		--fork="$srcdir/zig-wayland-$_zigwlver" \
+		-Doptimize=ReleaseSafe
+}
+
+check() {
+	cd "$srcdir/$pkgname-$pkgver"
+	zig build test \
+		--prefix usr \
+		--summary all \
+		--fork="$srcdir/zig-xkbcommon-$_xkbver" \
+		--fork="$srcdir/mvzr-$_mvzrver" \
+		--fork="$srcdir/zig-clap-$_clapver" \
+		--fork="$srcdir/zig-wayland-$_zigwlver" \
+		-Doptimize=ReleaseSafe
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+	DESTDIR="$pkgdir" zig build install \
+		--prefix usr \
+		--fork="$srcdir/zig-xkbcommon-$_xkbver" \
+		--fork="$srcdir/mvzr-$_mvzrver" \
+		--fork="$srcdir/zig-clap-$_clapver" \
+		--fork="$srcdir/zig-wayland-$_zigwlver" \
+		-Doptimize=ReleaseSafe
+}
+
+sha512sums="
+064dbd2ec78b5f06b345e25ec18d4e3afaa1db53f5e0a6490ae28d442d8e98875e40001230f634d3b379341d99fa5f5bd3cd21275788e2b1646a1263e0934e6b  kwim-0.2.0.tar.gz
+f70c6a2c9e0708f746e79ddf051fcb8dee17463b87d8c938ccc1d98840d29d7dff019432eb16bbabed0dc1fff7dd3a718178e6e8bce57e56847209ffa450bbb4  mvzr-0.3.9.tar.gz
+fdc20fd7c2bb5495cc7f0f2d175ab4632cd45b729dcb51b716222b8ccbe48caae8239d3ffaa6c70b82bd56b5f6ac8d4515d05acc4d9eb8268d1c492d5f3d2b85  zigwl-0.6.0.tar.gz
+891b7b70441fbd3851f4767421c6278fbb4b5c6ca32d15994428d54a5e03f2272546156daddf752364274a901cf0474100adf3ced43ae0a5d32434ab93e4e7bd  xkb-0.4.0.tar.gz
+c1ac544bb32dbba0c0701229982a67f7b84908bab0d1431616fc5745a52e731f450840efb6d479fd4b3885a4be7737ae1448541585d40c8f44fe4f234fb6885b  clap-0.12.0.tar.gz
+"

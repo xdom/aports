@@ -1,0 +1,95 @@
+# Contributor: Keon Cachia <keonfarrugia@gmail.com>
+# Maintainer: Keon Cachia <keonfarrugia@gmail.com>
+
+pkgname=kwm
+pkgver=0.3.0
+pkgrel=0
+pkgdesc="Kewuaa's window manager for the River compositor"
+url="https://github.com/kewuaa/kwm"
+arch="x86_64"
+license="GPL-3.0-only"
+
+depends="
+	kwim
+	so:libfcft.so.4
+	so:libpixman-1.so.0
+	so:libxkbcommon.so.0
+	wayland-libs-client
+"
+
+makedepends="
+	fcft-dev
+	libxkbcommon-dev
+	pixman-dev
+	wayland-dev
+	wayland-protocols
+	zig>=0.16.0
+"
+
+subpackages="$pkgname-doc"
+
+_xkbver=0.3.0
+_mvzrver=0.3.10
+_fcftver=2.0.0
+_pixmanver=0.3.0
+_zigwlver=0.6.0
+
+source="
+	$pkgname-$pkgver.tar.gz::https://github.com/kewuaa/kwm/archive/refs/tags/v$pkgver.tar.gz
+	$pkgname.desktop
+	xkb-$_xkbver.tar.gz::https://github.com/ifreund/zig-xkbcommon/archive/refs/tags/v$_xkbver.tar.gz
+	mvzr-$_mvzrver.tar.gz::https://github.com/mnemnion/mvzr/archive/refs/tags/v$_mvzrver.tar.gz
+	fcft-$_fcftver.tar.gz::https://github.com/kewuaa/zig-fcft/archive/refs/tags/v$_fcftver.tar.gz
+	pixman-$_pixmanver.tar.gz::https://github.com/ifreund/zig-pixman/archive/refs/tags/v$_pixmanver.tar.gz
+	zigwl-$_zigwlver.tar.gz::https://github.com/ifreund/zig-wayland/archive/refs/tags/v$_zigwlver.tar.gz
+"
+
+build() {
+	cd "$srcdir/$pkgname-$pkgver"
+	zig build \
+		--prefix usr \
+		--fork="$srcdir/zig-xkbcommon-$_xkbver" \
+		--fork="$srcdir/mvzr-$_mvzrver" \
+		--fork="$srcdir/zig-fcft-$_fcftver" \
+		--fork="$srcdir/zig-pixman-$_pixmanver" \
+		--fork="$srcdir/zig-wayland-$_zigwlver" \
+		-Doptimize=ReleaseSafe
+}
+
+check() {
+	cd "$srcdir/$pkgname-$pkgver"
+	zig build test \
+		--summary all \
+		--prefix /usr \
+		--fork="$srcdir/zig-xkbcommon-$_xkbver" \
+		--fork="$srcdir/mvzr-$_mvzrver" \
+		--fork="$srcdir/zig-fcft-$_fcftver" \
+		--fork="$srcdir/zig-pixman-$_pixmanver" \
+		--fork="$srcdir/zig-wayland-$_zigwlver" \
+		-Doptimize=ReleaseSafe
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+	DESTDIR="$pkgdir" zig build install \
+		--prefix usr \
+		--fork="$srcdir/zig-xkbcommon-$_xkbver" \
+		--fork="$srcdir/mvzr-$_mvzrver" \
+		--fork="$srcdir/zig-fcft-$_fcftver" \
+		--fork="$srcdir/zig-pixman-$_pixmanver" \
+		--fork="$srcdir/zig-wayland-$_zigwlver" \
+		-Doptimize=ReleaseSafe
+
+	install -D -m644 "$srcdir/$pkgname.desktop" \
+		"$pkgdir/usr/share/wayland-sessions/$pkgname.desktop"
+}
+
+sha512sums="
+8861dafdf02e7b3c6f91938a543892c261d2a218d1e2408ccbb80f1a3a14ff008639006b102c8e6e64274966ad7658689263ddf9e59d2bff2f9b9d17f3e295b6  kwm-0.3.0.tar.gz
+362b924cc41cc0b2a70c83f41d35cfd51b16c9387df262361c638b15500d792598718b4b5bd0355e062b95e3d789be757608df99f31cf02b416060324873c8ca  kwm.desktop
+ae188a6d15a1b03c779ab2876726a1041054ba8a9314366242f9d020bc34929088d6d384e9e905cc750988047b6941667abed91704785f0671f1447ff8684ffd  xkb-0.3.0.tar.gz
+2cf4368437f9239dd44b47a6c9812e1f75d64221e138d14c78efd1c36d95a1585eca3e95fefc1c3c92e2a995f34d029dddae79358616282a8ec407032abe5937  mvzr-0.3.10.tar.gz
+b5838e86d6454002a5d96946f91dd4108e0ef2c9cfb9fc15547ec06746aaaf3fd68e31f1a66af71f9d5990c8ffb7e1bdd55d203b2758830db2862750627255d3  fcft-2.0.0.tar.gz
+bf9a588002a00b6fdc17013ff708d0601f403c4d2a01d4a407aed03c8fb942ae53dc8ada0ca1f8474b2ed50f6da2ca2ac5e22e941fec5f108bd21bed8aa433ec  pixman-0.3.0.tar.gz
+fdc20fd7c2bb5495cc7f0f2d175ab4632cd45b729dcb51b716222b8ccbe48caae8239d3ffaa6c70b82bd56b5f6ac8d4515d05acc4d9eb8268d1c492d5f3d2b85  zigwl-0.6.0.tar.gz
+"

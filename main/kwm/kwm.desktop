@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=KWM
+DesktopNames=kwm;river;wlroots
+Comment=KWM over River
+Exec=river -c kwm
+Type=Application
