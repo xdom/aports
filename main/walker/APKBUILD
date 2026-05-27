@@ -1,0 +1,62 @@
+# Contributor: Andrej Benz <hello@benz.dev>
+# Maintainer: Andrej Benz <hello@benz.dev>
+pkgname=walker
+pkgver=2.16.2
+pkgrel=0
+pkgdesc="Wayland application runner"
+url="https://github.com/abenz1267/walker"
+license="GPL-3.0-or-later"
+arch="x86_64 aarch64"
+
+# TODO: Some dynlibs are probably missing from runtime dependencies.
+depends="
+	cairo
+	elephant
+	elephant-provider-desktopapplications
+	elephant-provider-providerlist
+	gtk4-layer-shell
+	poppler-glib
+"
+
+makedepends="
+	cargo
+	rust
+	gtk4-layer-shell-dev
+	gdk-pixbuf-dev
+	gobject-introspection-dev
+	pango-dev
+	poppler-dev
+	protobuf-dev
+"
+
+options="!check net" # No test suite
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/abenz1267/walker/archive/refs/tags/v$pkgver.tar.gz"
+
+_builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$srcdir/$pkgname-$pkgver"
+
+	export RUSTUP_TOOLCHAIN=stable
+	export CARGO_TARGET_DIR=target
+	cargo build --release
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+
+	install -Dm755 target/release/walker "$pkgdir/usr/bin/walker"
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm644 resources/config.toml "$pkgdir/etc/xdg/walker/config.toml"
+
+	theme_dir="$pkgdir/etc/xdg/walker/themes/default"
+	install -d "$theme_dir"
+	for f in resources/themes/default/*.xml resources/themes/default/*.css; do
+		install -m644 "$f" "$theme_dir/"
+	done
+}
+
+sha512sums="
+dff469f821d892c5e866bb1aef8aa01497597307c433422378723af8e2fe6e4186d8439a10c576446398f63efbcca1c15e0e49f159ba95a1e72df14570906f26  walker-2.16.2.tar.gz
+"

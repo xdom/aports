@@ -1,0 +1,64 @@
+# Maintainer: Andrej Benz <hello@benz.dev>
+pkgname=elephant
+pkgver=2.21.0
+pkgrel=0
+pkgdesc="General purpose datasource and executor"
+url="https://github.com/abenz1267/elephant"
+arch="x86_64 aarch64"
+license="GPL-3.0-only"
+makedepends="go"
+
+options="net"
+subpackages="
+	$pkgname-doc
+	$pkgname-provider-calc:provider
+	$pkgname-provider-desktopapplications:provider
+	$pkgname-provider-files:provider
+	$pkgname-provider-menus:provider
+	$pkgname-provider-playerctl:provider
+	$pkgname-provider-providerlist:provider
+	$pkgname-provider-symbols:provider
+	$pkgname-provider-wireplumber:provider
+"
+
+source="$pkgname-$pkgver.tar.gz::https://github.com/abenz1267/elephant/archive/refs/tags/v$pkgver.tar.gz"
+
+_builddir="$srcdir/$pkgname-$pkgver"
+_goflags="-buildvcs=false -trimpath"
+_provs="calc desktopapplications files menus playerctl providerlist symbols wireplumber"
+
+build() {
+	cd "$_builddir/cmd/elephant"
+	go build $_goflags -o elephant
+
+	for prov in $_provs; do
+		cd "$_builddir/internal/providers/$prov"
+		go build $_goflags -buildmode=plugin
+	done
+}
+
+package() {
+	install -Dm755 \
+		"$_builddir/cmd/elephant/elephant" \
+		"$pkgdir/usr/bin/elephant"
+
+	install -Dm644 \
+		"$_builddir/LICENSE" \
+		"$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+
+	for prov in $_provs; do
+		install -Dm644 \
+			"$_builddir/internal/providers/$prov/$prov.so" \
+			"$pkgdir/usr/lib/$pkgname/$prov.so"
+	done
+}
+
+provider() {
+	_name="${subpkgname#elephant-provider-}"
+	install -d "$subpkgdir/usr/lib/$pkgname"
+	mv "$pkgdir/usr/lib/$pkgname/$_name.so" "$subpkgdir/usr/lib/$pkgname/"
+}
+
+sha512sums="
+71c689f87e6f3be0249eb8e0c72103cabb18050dfb6f34a88d3fb369ebe2a6976f5dcc7f964f10ecc80b04df8581836f4374bfda07755381bbfe5cb9dfa3c053  elephant-2.21.0.tar.gz
+"
