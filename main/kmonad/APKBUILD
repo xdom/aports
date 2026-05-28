@@ -1,27 +1,31 @@
 pkgname=kmonad
-pkgver=0.4.1_git20230426
-pkgrel=1
+pkgver=0.4.5
+pkgrel=0
 pkgdesc="An advanced keyboard manager"
-_commit="3aa2f52536de853efbcb0f6e790c97a3734687ec"
 url="https://github.com/kmonad/kmonad"
 arch="all"
 license="MIT"
-makedepends="
-	cabal
-	git
-	"
-subpackages="$pkgname-openrc"
-options=""
-source="https://github.com/kmonad/kmonad/archive/$_commit.zip
-				$pkgname.initd
-				$pkgname.confd
-				"
-builddir="$srcdir/$pkgname-$_commit"
+makedepends="cabal git"
+
+install="$pkgname-openrc.pre-install"
+options="net"
+subpackages="$pkgname-doc $pkgname-openrc"
+
+source="
+	$pkgname-$pkgver.tar.gz::https://github.com/kmonad/kmonad/archive/refs/tags/$pkgver.tar.gz
+	$pkgname.initd
+	$pkgname.confd
+"
+builddir="$srcdir/$pkgname-$pkgver"
 
 build() {
 	cabal update
 	cabal configure
 	cabal build
+}
+
+check() {
+	cabal test
 }
 
 package() {
@@ -40,12 +44,8 @@ package() {
 	install -Dm644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
 }
 
-openrc() {
-	default_openrc
-}
-
 sha512sums="
-4a2dd215e742c421138e74e6155220e6f6d869ddb581672e1a55feb4a0d8e4dca82d58d795ff87a473d100e204bc0c1680538fc2f558995d4654ff47ecd529e8  3aa2f52536de853efbcb0f6e790c97a3734687ec.zip
-9cf478f9d1210912e82fda66bbe3cb9b9e64c6d70591f01a15c49ddc275021214fefd7bf96a8f4a2a028617462315fa99526c41afc6436ca16f8d9a42da67ef0  kmonad.initd
+7401bf5ab0b000241cca8d01c062891d3ba9e55c1a1ed2ab8c8ca2962d92d9a234063161b962e23f5698071ddd334dfeb9c7d272e69110211e889908abebcd62  kmonad-0.4.5.tar.gz
+200c2d68b9119338da267cfcde9526266c29270ea98dfea8e0bc4379e71c94046435e414e73ab1700eb936c5350db07bc8d60e07d40c0be391fda49fb045af89  kmonad.initd
 fcea105fadfa88cb83e42ce5dccaedc8ea22a7c2d497121da7e20ec1ae9d0e4fd7905c10529bf04eb7029ee15c190e580ea1319af743d8a69f02d8cfa1645caa  kmonad.confd
 "
