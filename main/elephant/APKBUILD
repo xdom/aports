@@ -9,23 +9,22 @@ license="GPL-3.0-only"
 makedepends="go"
 
 options="net"
-subpackages="
-	$pkgname-doc
-	$pkgname-provider-calc:provider
-	$pkgname-provider-desktopapplications:provider
-	$pkgname-provider-files:provider
-	$pkgname-provider-menus:provider
-	$pkgname-provider-playerctl:provider
-	$pkgname-provider-providerlist:provider
-	$pkgname-provider-symbols:provider
-	$pkgname-provider-wireplumber:provider
-"
+subpackages="$pkgname-doc" # provider specific subpackages added below
 
 source="$pkgname-$pkgver.tar.gz::https://github.com/abenz1267/elephant/archive/refs/tags/v$pkgver.tar.gz"
 
 _builddir="$srcdir/$pkgname-$pkgver"
 _goflags="-buildvcs=false -trimpath"
-_provs="calc desktopapplications files menus playerctl providerlist symbols wireplumber"
+_provs="
+	1password archlinuxpkgs bitwarden bluetooth bookmarks calc clipboard
+	desktopapplications dnfpackages files menus niriactions nirisessions
+	playerctl providerlist runner snippets symbols todo unicode websearch
+	windows wireplumber
+"
+
+for p in $_provs; do
+	subpackages="$subpackages $pkgname-provider-$p:provider"
+done
 
 build() {
 	cd "$_builddir/cmd/elephant"
