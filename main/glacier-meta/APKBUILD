@@ -1,7 +1,7 @@
 # Contributor:
 # Maintainer:
 pkgname=glacier-meta
-pkgver=1.0.0
+pkgver=1.1.0
 pkgrel=0
 pkgdesc="Glacier meta packages"
 url="https://github.com/xdom/glacier-meta"
@@ -11,48 +11,38 @@ depends=""
 makedepends=""
 checkdepends=""
 install=""
-subpackages="$pkgname-base $pkgname-desktop $pkgname-network $pkgname-wifi"
+subpackages="$pkgname-base $pkgname-desktop $pkgname-dev $pkgname-network $pkgname-wifi"
 source=""
 builddir="$srcdir/"
 
 base() {
 	depends="
-		bottom bottom-doc bottom-zsh-completion
-		git git-doc git-zsh-completion
-		man-pages
-		neofetch neofetch-doc
-		neovim neovim-doc
-		ranger ranger-doc
-		tmux tmux-doc tmux-zsh-completion
+		bat bottom btrfs-progs chimerautils curl docs eza fastfetch
+		fd fzf man-pages neofetch neovim oh-my-zsh ripgrep sysklogd
+		tar tmux wget yazi zip zsh
+	"
+	mkdir -p "$subpkgdir"
+}
+
+dev() {
+	depends="
+		alpine-sdk build-base cmake delta lazygit gdb git nodejs
+		python3 rustup rust-gdb tree-sitter
 	"
 	mkdir -p "$subpkgdir"
 }
 
 desktop() {
 	depends="
-		sway sway-doc sway-zsh-completion
-		swaybg swaybg-doc
-		swayidle swayidle-doc swayidle-zsh-completion
-		swaylock swaylock-doc swaylock-zsh-completion
-		alacritty alacritty-doc alacritty-zsh-completion
-		grimshot grimshot-doc grim-doc slurp-doc
-		kanshi kanshi-doc
-		libinput libinput-doc libinput-udev
-		mako mako-doc mako-zsh-completion
-		mesa-dri-gallium mesa-va-gallium intel-media-driver linux-firmware-amdgpu
-    nerd-fonts-all
-		pavucontrol pavucontrol-doc
-		waybar waybar-doc
-		wl-clipboard wl-clipboard-doc wl-clipboard-zsh-completion
-		wofi wofi-doc wofi-calc wofi-emoji
-		cava
-		pulseaudio pulseaudio-alsa pulseaudio-bluez pulseaudio-doc
-		pulseaudio-openrc pulseaudio-zsh-completion
-		pulsemixer pavucontrol pavucontrol-doc
-		seatd seatd-doc seatd-openrc
-		qutebrowser qutebrowser-doc
-		xdg-desktop-portal-gtk
-		xdg-desktop-portal-wlr xdg-desktop-portal-wlr-doc
+		alacritty cava emptty font-dejavu font-openmoji fuzzel
+		grimshot intel-media-driver kanshi libinput libinput-udev
+		linux-firmware-amdgpu mako mesa-dri-gallium mesa-va-gallium
+		nerd-fonts-all
+		pavucontrol pipewire pipewire-pulse
+		pulseaudio-bluez pulsemixer pavucontrol seatd
+		sway swaybg swayidle swaylock
+		qutebrowser turnstile waybar wireplumber wl-clipboard
+		xdg-desktop-portal-gtk xdg-desktop-portal-wlr
 		xwayland
 	"
 	mkdir -p "$subpkgdir"
@@ -60,8 +50,7 @@ desktop() {
 
 network() {
 	depends="
-		openconnect openconnect-doc openconnect-openrc
-		vpn-slice
+		openconnect vpn-slice
 	"
 	mkdir -p "$subpkgdir"
 }
