@@ -3,7 +3,7 @@
 
 pkgname=beansprout
 pkgver=1.1.1
-pkgrel=0
+pkgrel=1
 pkgdesc="A DWM-style tiling Wayland compositor with built-in wallpaper and clock/bar configured in KDL"
 url="https://codeberg.org/beansprout/beansprout"
 arch="x86_64"
@@ -62,6 +62,6 @@ package() {
 }
 
 sha512sums="
-05b3efa1f3bb11a6e41ec4921050a2cd24716892e5dec7a423faa1759035eed49e2328c2e6f03aea01f2ffc63ae3be3918ba9165ad317b6a8be95165f3466620  beansprout-1.1.1.tar.gz
+f30cfe42cff0f2bf250799074c6d2c72a65599eaf1c559b4000b27e3ed1d4ddb46d077798093b1fbad827d41024a8ff05ae11a25b7c706f2bae8e6107d7621ca  beansprout-1.1.1.tar.gz
 6352b7cfca563bd40ef3820518895ba57438e93e5a8e2fa0c8fc6e7f5293310e81a26d3f9906181f2fd3e13f92c951515771b2f82a158e64811d431c4cc5c7c2  beansprout.desktop
 "
